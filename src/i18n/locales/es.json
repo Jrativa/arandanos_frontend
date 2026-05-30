@@ -1,0 +1,22 @@
+{
+  "app.name": "Blueberry Ledger",
+  "app.tagline": "Inventario de la Granja a la Mesa",
+  "app.subtagline": "Rastrea. Administra. Crece.",
+
+  "auth.welcome": "Bienvenido de nuevo",
+  "auth.subtitle": "Inicia sesión para administrar tu inventario",
+  "auth.username": "Usuario",
+  "auth.username.placeholder": "usuario",
+  "auth.password": "Contraseña",
+  "auth.password.placeholder": "••••••••",
+  "auth.remember": "Recordarme",
+  "auth.forgot": "¿Olvidaste tu contraseña?",
+  "auth.signin": "Iniciar sesión",
+  "auth.signingin": "Iniciando sesión...",
+  "auth.noaccount": "¿No tienes una cuenta? ",
+  "auth.contact": "Contacta a tu administrador",
+  "auth.error.invalid": "Credenciales inválidas. Intenta de nuevo.",
+
+  "lang.en": "English",
+  "lang.es": "Español"
+}

@@ -1,0 +1,22 @@
+{
+  "app.name": "Blueberry Ledger",
+  "app.tagline": "Farm-to-Table Inventory",
+  "app.subtagline": "Track. Manage. Grow.",
+
+  "auth.welcome": "Welcome back",
+  "auth.subtitle": "Sign in to manage your inventory",
+  "auth.username": "Username",
+  "auth.username.placeholder": "username",
+  "auth.password": "Password",
+  "auth.password.placeholder": "••••••••",
+  "auth.remember": "Remember me",
+  "auth.forgot": "Forgot password?",
+  "auth.signin": "Sign In",
+  "auth.signingin": "Signing in...",
+  "auth.noaccount": "Don't have an account? ",
+  "auth.contact": "Contact your administrator",
+  "auth.error.invalid": "Invalid credentials. Please try again.",
+
+  "lang.en": "English",
+  "lang.es": "Español"
+}
