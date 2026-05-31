@@ -1,10 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Importamos tus dos páginas
 import LoginPage from '@/modules/auth/ui/Login';
-import Home from '@/Home';
-
-// Opcional: Importamos tu store para proteger la ruta
+import { LandingPage } from '@/modules/home/ui/landing-page';
 import { useAuthStore } from './modules/auth/application/authStore';
 
 function App() {
@@ -25,7 +22,7 @@ function App() {
           element={
             // Un pequeño guardia de seguridad: 
             // Si hay usuario, muestra el Home. Si no, mándalo al login.
-            user ? <Home /> : <Navigate to="/login" replace />
+            user ? <LandingPage /> : <Navigate to="/login" replace />
           } 
         />
       </Routes>
