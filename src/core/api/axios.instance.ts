@@ -21,19 +21,26 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Un 401 en login/refresh es un error real de credenciales, no un token vencido
+    const isAuthEndpoint = /\/auth\/(login|refresh)$/.test(originalRequest?.url ?? '');
+    const refreshToken = sessionStorage.getItem('refresh_token');
+
     // Si el error es 401 (No autorizado) y no hemos reintentado ya
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint && refreshToken) {
       originalRequest._retry = true;
 
       try {
-        // Llamamos a tu endpoint de FastAPI para refrescar el token
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh`, {}, {
-          withCredentials: true 
-        });
+        // El backend espera el refresh token en el cuerpo
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/refresh`,
+          { refresh_token: refreshToken },
+          { withCredentials: true }
+        );
 
-        // Guardamos el nuevo token
+        // Guardamos los nuevos tokens
         const newAccessToken = res.data.access_token;
         sessionStorage.setItem('access_token', newAccessToken);
+        sessionStorage.setItem('refresh_token', res.data.refresh_token);
 
         // Reintentamos la petición original que falló con el nuevo token
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -42,7 +49,9 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Si el refresh token también expiró, cerramos la sesión
         sessionStorage.removeItem('access_token');
-        window.location.href = '/login'; 
+        sessionStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('user_data');
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }

@@ -1,104 +1,46 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Cherry, Languages } from "lucide-react";
+import { Navigate } from "react-router-dom";
+import { motion } from "motion/react";
+import { Cherry } from "lucide-react";
 
 import { useAuthStore } from "@/modules/auth/application/authStore";
+import { LanguageToggle } from "@/shared/ui/language-toggle";
+import { spring } from "@/shared/lib/motion";
 import { LoginForm } from "./LoginForm";
 import LoginImagePanel from "./LoginImagePanel";
 
-interface LoginFormData {
-  username: string;
-  password: string;
-}
-
-const LANGUAGES = [
-  { code: "en", label: "lang.en" },
-  { code: "es", label: "lang.es" },
-];
-
 export default function LoginPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { login, isLoading, error, user } = useAuthStore();
-  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<LoginFormData>({
-    username: "",
-    password: "",
-  });
-
-  const [rememberMe, setRememberMe] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/home", { replace: true });
-    }
-  }, [user, navigate]);
-
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await login(formData.username, formData.password);
-  };
-
-  const toggleLanguage = () => {
-    const next = i18n.language === "en" ? "es" : "en";
-    i18n.changeLanguage(next);
-    localStorage.setItem("language", next);
-  };
+  if (user) return <Navigate to="/home" replace />;
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-cream">
+    <div className="grid min-h-dvh lg:grid-cols-2">
       <LoginImagePanel />
 
-      <div className="relative flex-1 flex items-center justify-center p-6 lg:p-12">
-        <button
-          type="button"
-          onClick={toggleLanguage}
-          className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-dusty hover:text-midnight border border-midnight/10 rounded-lg hover:bg-midnight/5 transition-colors"
-        >
-          <Languages className="size-3.5" />
-          {i18n.language === "en" ? "ES" : "EN"}
-        </button>
+      <main className="relative flex items-center justify-center px-6 py-16">
+        <LanguageToggle className="absolute right-4 top-4" />
 
-        <div className="w-full max-w-md">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-midnight/5">
-                <Cherry className="size-8 text-midnight" strokeWidth={1.5} />
-              </div>
-              <span className="text-2xl font-semibold text-midnight tracking-tight">
-                {t("app.name")}
-              </span>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={spring}
+          className="w-full max-w-sm"
+        >
+          <div className="mb-10 flex flex-col items-center text-center lg:items-start lg:text-left">
+            <div className="mb-6 grid size-14 place-items-center rounded-2xl bg-midnight text-cream">
+              <Cherry className="size-7" strokeWidth={1.5} aria-hidden />
             </div>
-            <h1 className="text-3xl font-light text-midnight mb-2">
-              {t("auth.welcome")}
-            </h1>
-            <p className="text-dusty text-sm">
-              {t("auth.subtitle")}
-            </p>
+            <h1 className="text-4xl font-semibold">{t("auth.welcome")}</h1>
+            <p className="mt-2 text-base text-dusty">{t("auth.subtitle")}</p>
           </div>
 
-          <LoginForm
-            formData={formData}
-            rememberMe={rememberMe}
-            isLoading={isLoading}
-            error={error}
-            onFormDataChange={setFormData}
-            onRememberMeChange={setRememberMe}
-            onSubmit={handleSubmit}
-          />
+          <LoginForm isLoading={isLoading} error={error} onSubmit={login} />
 
-          <p className="text-center text-sm text-dusty/70 mt-8">
-            {t("auth.noaccount")}
-            <a
-              href="#"
-              className="text-midnight hover:text-dusty transition-colors font-medium"
-            >
-              {t("auth.contact")}
-            </a>
-          </p>
-        </div>
-      </div>
+          <p className="mt-8 text-center text-sm text-dusty lg:text-left">{t("auth.noaccount")}</p>
+        </motion.div>
+      </main>
     </div>
   );
 }
